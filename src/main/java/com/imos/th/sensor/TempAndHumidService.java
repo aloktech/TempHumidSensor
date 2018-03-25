@@ -90,7 +90,7 @@ public class TempAndHumidService {
                 data = sensorData.values(criteriaQuery);
                 try (FileWriter fileWriter = new FileWriter(fileName + ".txt", true);
                         BufferedWriter writer = new BufferedWriter(fileWriter)) {
-                    List<SensorData> list = new ArrayList<>();
+                    List<SensorData> list = new ArrayList<>(data);
                     Collections.sort(list, (o1, o2)
                             -> o1.getTime() == o2.getTime() ? 0 : o1.getTime() < o2.getTime() ? -1 : 1
                     );

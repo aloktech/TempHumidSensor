@@ -15,6 +15,8 @@ import static com.imos.th.sensor.TempAndHumidConstant.TEMP_HUMID;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import static spark.Spark.get;
 import static spark.Spark.port;
 
@@ -61,6 +63,10 @@ public class TempAndHumidServiceProvider {
         IMap<Long, SensorData> sensorData = TempAndHumidService.getInstance().getHazelCastInstance().getMap(TEMP_HUMID);
         Predicate criteriaQuery = Predicates.between("time", start, end);
         data = sensorData.values(criteriaQuery);
-        return data;
+        List<SensorData> list = new ArrayList<>(data);
+        Collections.sort(list, (o1, o2)
+                -> o1.getTime() == o2.getTime() ? 0 : o1.getTime() < o2.getTime() ? -1 : 1
+        );
+        return list;
     }
 }
