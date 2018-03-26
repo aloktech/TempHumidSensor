@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
@@ -86,7 +84,7 @@ public class TempAndHumidService {
                 IMap<Long, SensorData> sensorData = hazelCastInstance.getMap(TEMP_HUMID);
                 log.info("Data count: " + sensorData.size());
                 long time = System.currentTimeMillis();
-                Predicate criteriaQuery = Predicates.and(Predicates.between("time", lastTime, time));
+                Predicate criteriaQuery = Predicates.between("time", lastTime, time);
                 data = sensorData.values(criteriaQuery);
                 try (FileWriter fileWriter = new FileWriter(fileName + ".txt", true);
                         BufferedWriter writer = new BufferedWriter(fileWriter)) {
