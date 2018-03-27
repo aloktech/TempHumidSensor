@@ -20,8 +20,8 @@ public class SensorData implements Serializable {
 
     private static final String ipAddress = getDefaultLocalHost();
     
-    private String temperature;
-    private String humidity;
+    private double temperature;
+    private double humidity;
     private final long time;
     private final long day;
     

@@ -68,7 +68,7 @@ public class TempAndHumidService {
                     log.warn("Not data from sensor");
                 }
             }
-        }, 0, 5000);
+        }, 0, 30000);
     }
 
     public void saveToLocalDB() {
@@ -86,7 +86,7 @@ public class TempAndHumidService {
                 long time = System.currentTimeMillis();
                 Predicate criteriaQuery = Predicates.between("time", lastTime, time);
                 data = sensorData.values(criteriaQuery);
-                try (FileWriter fileWriter = new FileWriter(fileName + ".txt", true);
+                try (FileWriter fileWriter = new FileWriter("/home/pi/NetBeansProjects/TempHumidSensor/" + fileName + ".txt", true);
                         BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     List<SensorData> list = new ArrayList<>(data);
                     Collections.sort(list, (o1, o2)
@@ -101,7 +101,7 @@ public class TempAndHumidService {
                 }
                 lastTime = time;
             }
-        }, 0, 180000);
+        }, 0, 300000);
     }
 
 }

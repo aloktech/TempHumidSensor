@@ -16,8 +16,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import static spark.Spark.get;
+import static spark.Spark.options;
 import static spark.Spark.port;
 
 /**
@@ -33,6 +35,23 @@ public class TempAndHumidServiceProvider {
         service.saveToLocalDB();
 
         port(8090);
+        options("/*", (req, res) -> {
+            String accessControlRequestHeaders = req
+                    .headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                res.header("Access-Control-Allow-Headers",
+                        accessControlRequestHeaders);
+            }
+
+            String accessControlRequestMethod = req
+                    .headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                res.header("Access-Control-Allow-Methods",
+                        accessControlRequestMethod);
+            }
+
+            return "OK";
+        });
         get("/testing", (req, res) -> {
             return "Hello World: " + LocalDateTime.now();
         });
@@ -64,9 +83,7 @@ public class TempAndHumidServiceProvider {
         Predicate criteriaQuery = Predicates.between("time", start, end);
         data = sensorData.values(criteriaQuery);
         List<SensorData> list = new ArrayList<>(data);
-        Collections.sort(list, (o1, o2)
-                -> o1.getTime() == o2.getTime() ? 0 : o1.getTime() < o2.getTime() ? -1 : 1
-        );
+        Collections.sort(list, Comparator.comparingLong(SensorData::getTime));
         return list;
     }
 }

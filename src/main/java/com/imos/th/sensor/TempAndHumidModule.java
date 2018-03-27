@@ -51,8 +51,8 @@ public class TempAndHumidModule {
                 return Optional.empty();
             }
             SensorData jsonData = new SensorData();
-            jsonData.setTemperature(data.substring(tempLength, data.indexOf(CELCIUS)));
-            jsonData.setHumidity(data.substring(data.indexOf(HUMIDITY) + humidLength, data.indexOf(PERCENTAGE)));
+            jsonData.setTemperature(Double.parseDouble(data.substring(tempLength, data.indexOf(CELCIUS))));
+            jsonData.setHumidity(Double.parseDouble(data.substring(data.indexOf(HUMIDITY) + humidLength, data.indexOf(PERCENTAGE))));
             return Optional.of(jsonData);
         });
         try {
