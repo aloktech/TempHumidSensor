@@ -12,6 +12,8 @@ import static com.imos.th.sensor.TempAndHumidConstant.TEMPERATURE;
 import static com.imos.th.sensor.TempAndHumidConstant.PERCENTAGE;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -19,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import lombok.extern.log4j.Log4j2;
-
 
 /**
  *
@@ -29,6 +30,8 @@ import lombok.extern.log4j.Log4j2;
 public class TempAndHumidModule {
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+
+    private static final Calendar CALENDAR = GregorianCalendar.getInstance();
 
     private ProcessExecutor executor;
 
@@ -53,6 +56,9 @@ public class TempAndHumidModule {
             SensorData jsonData = new SensorData();
             jsonData.setTemperature(Double.parseDouble(data.substring(tempLength, data.indexOf(CELCIUS))));
             jsonData.setHumidity(Double.parseDouble(data.substring(data.indexOf(HUMIDITY) + humidLength, data.indexOf(PERCENTAGE))));
+            CALENDAR.setTimeInMillis(jsonData.getTime());
+            jsonData.setTimeStr(CALENDAR.get(Calendar.HOUR_OF_DAY)
+                    + "." + CALENDAR.get(Calendar.MINUTE));
             return Optional.of(jsonData);
         });
         try {

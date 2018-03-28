@@ -22,6 +22,7 @@ public class SensorData implements Serializable {
     
     private double temperature;
     private double humidity;
+    private String timeStr;
     private final long time;
     private final long day;
     

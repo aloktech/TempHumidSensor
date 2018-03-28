@@ -68,8 +68,10 @@ public class TempAndHumidServiceProvider {
             }
             String resultMsg;
             if (data.isEmpty()) {
+                res.status(400);
                 resultMsg = "Invalid range: " + start + " " + end + " : " + LocalDateTime.now();
             } else {
+                res.status(202);
                 resultMsg = JSON.toJSONString(data);
             }
             return resultMsg;

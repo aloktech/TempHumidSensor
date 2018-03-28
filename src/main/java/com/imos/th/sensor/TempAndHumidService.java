@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
@@ -68,7 +69,7 @@ public class TempAndHumidService {
                     log.warn("Not data from sensor");
                 }
             }
-        }, 0, 30000);
+        }, 0, 120000);
     }
 
     public void saveToLocalDB() {
@@ -89,9 +90,7 @@ public class TempAndHumidService {
                 try (FileWriter fileWriter = new FileWriter("/home/pi/NetBeansProjects/TempHumidSensor/" + fileName + ".txt", true);
                         BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     List<SensorData> list = new ArrayList<>(data);
-                    Collections.sort(list, (o1, o2)
-                            -> o1.getTime() == o2.getTime() ? 0 : o1.getTime() < o2.getTime() ? -1 : 1
-                    );
+                    Collections.sort(list, Comparator.comparingLong(SensorData::getTime));
                     for (SensorData d : list) {
                         writer.append(JSON.toJSONString(d));
                         writer.newLine();
@@ -101,7 +100,7 @@ public class TempAndHumidService {
                 }
                 lastTime = time;
             }
-        }, 0, 300000);
+        }, 0, 600000);
     }
 
 }
