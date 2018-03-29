@@ -12,6 +12,8 @@ import com.hazelcast.query.Predicates;
 import com.imos.th.sensor.SensorData;
 import com.imos.th.sensor.TempAndHumidService;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterAll;
@@ -84,21 +86,22 @@ public class TempAndHumidHazelcastTest {
     public void testing4() {
         IMap<Long, SensorData> dataMap = instance.getMap("tempHumid");
         Assertions.assertTrue(dataMap.isEmpty());
-        long time1 = System.currentTimeMillis(), time2;
+        long time1 = System.currentTimeMillis();
         dataMap.put(System.currentTimeMillis(), new SensorData());
         Assertions.assertFalse(dataMap.isEmpty());
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TempAndHumidHazelcastTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        dataMap.put(System.currentTimeMillis(), new SensorData());
-        time2 = System.currentTimeMillis();
-        Predicate criteriaQuery = Predicates.between("time", time1, time2);
-        Collection<SensorData> data = dataMap.values(criteriaQuery);
-        Assertions.assertFalse(data.isEmpty());
-        Assertions.assertTrue(data.size() == 2);
-        System.out.println(data);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dataMap.put(System.currentTimeMillis(), new SensorData());
+                long time2 = System.currentTimeMillis();
+                Predicate criteriaQuery = Predicates.between("time", time1, time2);
+                Collection<SensorData> data = dataMap.values(criteriaQuery);
+                Assertions.assertFalse(data.isEmpty());
+                Assertions.assertTrue(data.size() == 2);
+                System.out.println(data);
+            }
+        }, 10000);
     }
 
 }

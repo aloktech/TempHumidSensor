@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
 import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.port;
@@ -26,6 +27,7 @@ import static spark.Spark.port;
  *
  * @author Pintu
  */
+@Log4j2
 public class TempAndHumidServiceProvider {
 
     public static void main(String[] args) {
@@ -52,19 +54,16 @@ public class TempAndHumidServiceProvider {
 
             return "OK";
         });
-        get("/testing", (req, res) -> {
-            return "Hello World: " + LocalDateTime.now();
-        });
         get("/tempHumid", (req, res) -> {
-            long start = 0, end = 0;
+            long start = 0;
+            long end = 0;
             Collection<SensorData> data = new ArrayList<>();
-            String message = TempAndHumidConstant.EMPTY;
             try {
                 start = Long.parseLong(req.queryParams(START));
                 end = Long.parseLong(req.queryParams(END));
                 data = queryForData(start, end);
             } catch (NumberFormatException e) {
-                message = "Invalid range: " + start + " " + end + " : " + LocalDateTime.now();
+                log.error("Invalid range: " + start + " " + end + " : " + LocalDateTime.now());
             }
             String resultMsg;
             if (data.isEmpty()) {

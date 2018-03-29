@@ -6,8 +6,8 @@
 package com.imos.sample.test;
 
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -56,16 +56,17 @@ public class TempAndHumidRestTest {
         target = target.path("tempHumid");
         target = target.queryParam("start", System.currentTimeMillis());
         System.out.println(new Date());
-        try {
-            Thread.sleep(120000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TempAndHumidRestTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(new Date());
-        target = target.queryParam("end", System.currentTimeMillis());
-        Response response = target.request().get();
-        Assertions.assertEquals(200, response.getStatus());
-        System.out.println(response.getStatus());
-        System.out.println(response.readEntity(String.class));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println(new Date());
+                target = target.queryParam("end", System.currentTimeMillis());
+                Response response = target.request().get();
+                Assertions.assertEquals(200, response.getStatus());
+                System.out.println(response.getStatus());
+                System.out.println(response.readEntity(String.class));
+            }
+        }, 120000);
     }
 }

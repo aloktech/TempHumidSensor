@@ -1,5 +1,6 @@
 package com.imos.th.sensor;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
@@ -17,8 +18,9 @@ import lombok.Data;
 public class SensorData implements Serializable {
 
     private static final long serialVersionUID = 5832101484242298342L;
-
-    private static final String ipAddress = getDefaultLocalHost();
+    
+    @JSONField(label = "ipaddress", name = "ipaddress")
+    private static final String IPADDRESS = getDefaultLocalHost();
     
     private double temperature;
     private double humidity;

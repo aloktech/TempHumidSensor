@@ -14,13 +14,15 @@ import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  *
  * @author Alok Ranjan
  */
+@Log4j2
 public class ProcessExecutor {
-    
+
     @Getter
     private final List<String> command;
     private Process process;
@@ -71,7 +73,7 @@ public class ProcessExecutor {
 
             // read any errors from the attempted command
             while ((line = stdError.readLine()) != null) {
-                System.err.println("xxxxx : " + line);
+                log.info("xxxxx : {}", line);
                 flags.setErrMsg(flags.getErrMsg() + line + "\n");
                 flags.setReadError(true);
             }
@@ -79,7 +81,8 @@ public class ProcessExecutor {
         return flags;
     }
 
-    @Setter @Getter
+    @Setter
+    @Getter
     public static class Flags {
 
         private boolean readInput;
@@ -87,6 +90,4 @@ public class ProcessExecutor {
         private boolean readError;
         private String errMsg = "";
     }
-
 }
-

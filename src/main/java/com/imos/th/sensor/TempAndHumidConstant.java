@@ -9,7 +9,9 @@ package com.imos.th.sensor;
  *
  * @author Alok
  */
-public class TempAndHumidConstant {
+public final class TempAndHumidConstant {
+    
+    private TempAndHumidConstant(){}
     
     public static final String UNDER_SCORE = "_";
     public static final String SLASH = "/";

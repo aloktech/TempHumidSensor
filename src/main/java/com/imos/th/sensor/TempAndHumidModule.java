@@ -31,11 +31,10 @@ public class TempAndHumidModule {
 
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
-    private static final Calendar CALENDAR = GregorianCalendar.getInstance();
+    private final Calendar cal = GregorianCalendar.getInstance();
 
-    private ProcessExecutor executor;
-
-    private final int tempLength = TEMPERATURE.length(), humidLength = HUMIDITY.length();
+    private final int tempLength = TEMPERATURE.length();
+    private final int humidLength = HUMIDITY.length();
 
     private final List<String> command = new ArrayList<>();
 
@@ -56,9 +55,9 @@ public class TempAndHumidModule {
             SensorData jsonData = new SensorData();
             jsonData.setTemperature(Double.parseDouble(data.substring(tempLength, data.indexOf(CELCIUS))));
             jsonData.setHumidity(Double.parseDouble(data.substring(data.indexOf(HUMIDITY) + humidLength, data.indexOf(PERCENTAGE))));
-            CALENDAR.setTimeInMillis(jsonData.getTime());
-            jsonData.setTimeStr(CALENDAR.get(Calendar.HOUR_OF_DAY)
-                    + "." + CALENDAR.get(Calendar.MINUTE));
+            cal.setTimeInMillis(jsonData.getTime());
+            jsonData.setTimeStr(cal.get(Calendar.HOUR_OF_DAY)
+                    + "." + cal.get(Calendar.MINUTE));
             return Optional.of(jsonData);
         });
         try {
@@ -72,8 +71,8 @@ public class TempAndHumidModule {
     public String executeCommand(List<String> command) {
         String value = EMPTY;
         try {
-            executor = new ProcessExecutor(command);
-            value = executor.startExecution().getInputMsg();
+            ProcessExecutor processExceutor = new ProcessExecutor(command);
+            value = processExceutor.startExecution().getInputMsg();
         } catch (IOException e) {
             log.error("{}", e.getMessage());
         }
